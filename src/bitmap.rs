@@ -89,14 +89,14 @@ mod tests {
 
     #[test]
     fn copy() {
-        let img = BMP::new("tiger.bmp").unwrap();
-        assert!(img.save_as("tiger_copy.bmp").is_ok());
-        assert!(fs::remove_file("tiger_copy.bmp").is_ok());
+        let img = BMP::new("example_images/tiger.bmp").unwrap();
+        assert!(img.save_as("example_images/tiger_copy.bmp").is_ok());
+        assert!(fs::remove_file("example_images/tiger_copy.bmp").is_ok());
     }
 
     #[test]
     fn dimensions() {
-        let img = BMP::new("tiger.bmp").unwrap();
+        let img = BMP::new("example_images/tiger.bmp").unwrap();
         assert_eq!(630, img.width());
         assert_eq!(354, img.height().abs());
     }
