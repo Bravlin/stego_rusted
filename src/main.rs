@@ -24,8 +24,8 @@ fn main() {
                 Ok(bmp) => bmp,
             };
             stego::hide_text(&mut bmp, &text, k);
-            if bmp.save_as(&format!("stego_{}", file)).is_err() {
-                eprintln!("An error ocurred while saving the modified image.");
+            if let Err(e) = bmp.save_as(&format!("{}.stego", file)) {
+                eprintln!("{}", e);
             }
         },
         "get" => {
@@ -35,6 +35,21 @@ fn main() {
             };
             let hidden_text = stego::get_text(&bmp);
             println!("{}", hidden_text);
+        }
+        "compare" => {
+            let file2 = arguments.next().expect("No path provided for second file.");
+            let bmp1 = match BMP::new(&file[..]) {
+                Err(e) => panic!("{}", e),
+                Ok(bmp) => bmp,
+            };
+            let bmp2 = match BMP::new(&file2[..]) {
+                Err(e) => panic!("{}", e),
+                Ok(bmp) => bmp,
+            };
+            let mse = BMP::mean_squared_error(&bmp1, &bmp2).expect("Images not comparable");
+            let psnr = BMP::peak_signal_noise_ratio(&bmp1, &bmp2).unwrap();
+            let ssim = BMP::structural_similarity(&bmp1, &bmp2).unwrap();
+            println!("MSE: {}\nPSNR: {}\nSSIM: {}", mse, psnr, ssim);
         }
         _ => {
             eprintln!("Invalid command provided");
